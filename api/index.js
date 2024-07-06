@@ -10,11 +10,12 @@ const axios = require("axios");
 /** Define constants and configure TL API endpoints */
 const APP_API_KEY = process.env.APP_API_KEY;
 const API_BASE_URL = process.env.APP_API_URL;
-
+const PORT_NUMBER= 4000
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'https://vercel.com/shrutikas-projects-aecc15b0/pikachu',
+  'https://pikachu-six.vercel.app'
 ];
 
 const corsOptions = {
@@ -58,7 +59,7 @@ process.on("uncaughtException", function (exception) {
 });
 
 app.listen(PORT_NUMBER, () => {
-  console.log(`Server Running. Listening `);
+  console.log(`Server Running. Listening${PORT_NUMBER}`);
 });
 
 const HEADERS = {
