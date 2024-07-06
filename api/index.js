@@ -8,12 +8,29 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 
 /** Define constants and configure TL API endpoints */
-const TWELVE_LABS_API_KEY = process.env.REACT_APP_API_KEY;
-const API_BASE_URL = process.env.API_URL;
-const PORT_NUMBER = process.env.REACT_APP_PORT_NUMBER || 4001;
+const APP_API_KEY = process.env.APP_API_KEY;
+const API_BASE_URL = process.env.APP_API_URL;
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://vercel.com/shrutikas-projects-aecc15b0/pikachu',
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
+};
 /** Set up middleware for Express */
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(
@@ -40,14 +57,13 @@ process.on("uncaughtException", function (exception) {
   console.log(exception);
 });
 
-/** Set up Express server to listen on port 4002 */
 app.listen(PORT_NUMBER, () => {
-  console.log(`Server Running. Listening on port ${PORT_NUMBER}`);
+  console.log(`Server Running. Listening `);
 });
 
 const HEADERS = {
   "Content-Type": "application/json",
-  "x-api-key": TWELVE_LABS_API_KEY,
+  "x-api-key": APP_API_KEY,
 };
 
 app.get("/" , async (request, response, next) =>  {
@@ -140,7 +156,7 @@ app.post(
       method: "POST",
       url: `${API_BASE_URL}/tasks`,
       headers: {
-        "x-api-key": TWELVE_LABS_API_KEY,
+        "x-api-key": APP_API_KEY,
         accept: "application/json",
         "Content-Type":
           "multipart/form-data; boundary=---011000010111000001101001",
