@@ -11,24 +11,33 @@ const axios = require("axios");
 const APP_API_KEY = process.env.APP_API_KEY;
 const API_BASE_URL = process.env.APP_API_URL;
 const PORT_NUMBER= 4000
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'https://vercel.com/shrutikas-projects-aecc15b0/pikachu',
-  'https://pikachu-six.vercel.app'
-];
+// const allowedOrigins = [
+//   'http://localhost:3000',
+//   'http://localhost:3001',
+//   'https://vercel.com/shrutikas-projects-aecc15b0/pikachu',
+//   'https://pikachu-six.vercel.app'
+// ];
+// const allowedOrigins = ['*'
+// ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
 
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+// };
+
+// app.use(cors(corsOptions));
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 /** Set up middleware for Express */
 app.use(cors(corsOptions));
 app.use(express.json());
