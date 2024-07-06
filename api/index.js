@@ -39,7 +39,7 @@ app.use(cors({
 }));
 
 /** Set up middleware for Express */
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(
