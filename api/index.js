@@ -12,6 +12,8 @@ const APP_API_KEY = process.env.APP_API_KEY;
 const API_BASE_URL = process.env.APP_API_URL;
 const PORT_NUMBER= 4000
 
+ffmpeg.setFfmpegPath(ffmpegPath.path);
+
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
