@@ -7,7 +7,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const ffmpeg = require('fluent-ffmpeg');
-const ffmpegPath = require('ffmpeg-static');
+// const ffmpegPath = require('ffmpeg-static');
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 const fs = require('fs');
 const path = require('path');
 /** Define constants and configure TL API endpoints */
@@ -15,7 +16,7 @@ const APP_API_KEY = process.env.APP_API_KEY;
 const API_BASE_URL = process.env.APP_API_URL;
 const PORT_NUMBER= 4000
 
-ffmpeg.setFfmpegPath(ffmpegPath.path);
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 const allowedOrigins = [
   'http://localhost:3000',
