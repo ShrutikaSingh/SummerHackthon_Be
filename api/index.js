@@ -8,6 +8,8 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('ffmpeg-static');
+const fs = require('fs');
+const path = require('path');
 /** Define constants and configure TL API endpoints */
 const APP_API_KEY = process.env.APP_API_KEY;
 const API_BASE_URL = process.env.APP_API_URL;
@@ -312,13 +314,7 @@ app.post("/video/search", async (req, res, next) => {
 
 
 
-const ffmpeg = require('fluent-ffmpeg');
-const ffmpegPath = require('ffmpeg-static');
-const fs = require('fs');
-const path = require('path');
-const json = require("body-parser/lib/types/json");
 
-ffmpeg.setFfmpegPath(ffmpegPath);
 
 // Function to create a single clip
 const createClip = (inputFile, start, end, outputFile) => {
