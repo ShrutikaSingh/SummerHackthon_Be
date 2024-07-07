@@ -332,7 +332,7 @@ const createClip = (inputFile, start, end, outputFile) => {
 
 const combineClips = async (videoFilePath, outputFilePath, timestamps) => {
   try {
-    const clipsDir = path.join(__dirname, 'clips');
+    const clipsDir = '/tmp/clips';
     if (!fs.existsSync(clipsDir)) {
       fs.mkdirSync(clipsDir);
     }
@@ -374,6 +374,7 @@ const combineClips = async (videoFilePath, outputFilePath, timestamps) => {
 app.post('/videos/:videoId/processvideo', async (req, res) => {
  
   const videoId =  req?.params?.videoId;
+  const timestamps = req?.body?.timestamps;
   console.log(JSON.stringify(videoId),'videoid')
 
   for (let key in videoId) {
@@ -382,12 +383,12 @@ app.post('/videos/:videoId/processvideo', async (req, res) => {
     }
 }
 
-  let timestamps = req?.body?.timestamps;
   console.log('alltimestamp', timestamps)
 
-  const videoFilePath = `/Users/206819985/Desktop/summer_hackathon/generate-social-posts/public/videos/uploaded/2.mp4`; // Replace with your video file path
-  //const outputFilePath = `/Users/206819985/Desktop/summer_hackathon/generate-social-posts/videos/output/${videoId}.mp4`; // Replace with desired output file path
-  const outputFilePath = `/Users/206819985/Desktop/summer_hackathon/generate-social-posts/public/videos/output/output.mp4`
+  const videoFilePath = path.join(__dirname, 'tmp', 'uploaded', `${videoId}.mp4`); // Adjusted video file path
+  const outputFilePath = path.join(__dirname, 'tmp', 'output', `output-video-${videoId}.mp4`); // Adjusted output file path
+
+  console.log('finale outputfile', outputFilePath)
   try {
     const outputFile = await combineClips(videoFilePath, outputFilePath, timestamps);
     res.json({ message: 'Video processing completed', outputFile });
