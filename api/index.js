@@ -11,32 +11,31 @@ const axios = require("axios");
 const APP_API_KEY = process.env.APP_API_KEY;
 const API_BASE_URL = process.env.APP_API_URL;
 const PORT_NUMBER= 4000
-// const allowedOrigins = [
-//   'http://localhost:3000',
-//   'http://localhost:3001',
-//   'https://vercel.com/shrutikas-projects-aecc15b0/pikachu',
-//   'https://pikachu-six.vercel.app'
-// ];
-// const allowedOrigins = ['*'
-// ];
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://vercel.com/shrutikas-projects-aecc15b0/pikachu',
+  'https://pikachu-six.vercel.app'
+];
 
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-// };
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
 
-// app.use(cors(corsOptions));
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors(corsOptions));
+
+// app.use(cors({
+//   origin: '*',
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization']
+// }));
 
 /** Set up middleware for Express */
 // app.use(cors(corsOptions));
@@ -248,8 +247,9 @@ app.post("/videos/:videoId/summarize", async (request, response, next) => {
 });
 
 const semanticSearchVideos = async (query, indexId, apiKey) => {
-  const url = "https://api.twelvelabs.io/v1.2/search";
 
+  const url = process.env.APP_API_URL;
+  console.log('apiresponse14', query, indexId, apiKey, url);
   const payload = {
     search_options: ["visual", "conversation", "text_in_video", "logo"],
     adjust_confidence_level: 0.5,
@@ -269,16 +269,36 @@ const semanticSearchVideos = async (query, indexId, apiKey) => {
     "Content-Type": "application/json"
   };
 
-  return axios.post(url, payload, { headers });
+  try {
+    const response = await axios.post(`${url}/search`, payload, { headers });
+    console.log('apiresponse15', JSON.stringify(response.data));
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // Server responded with a status other than 200 range
+      console.error('Error response:', error.response.data);
+      console.error('Error status:', error.response.status);
+      console.error('Error headers:', error.response.headers);
+    } else if (error.request) {
+      // Request was made but no response was received
+      console.error('Error request:', error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error message:', error.message);
+    }
+    console.error('Error config:', error.config);
+  }
 };
-
 app.post("/video/search", async (req, res, next) => {
   try {
     const { queryText } = req.body;
+    console.log('apiresponse11', JSON.stringify(queryText))
    // TODO: REMOVE THESE API KEY AND USE FROM APP CONFIG OR GET DIRECTLY IN BACKEND
-    const apiKey =  process.env.REACT_APP_API_KEY; // Replace with your actual API key
+    const apiKey =  process.env.APP_API_KEY; // Replace with your actual API key
     const indexId = process.env.REACT_APP_INDEX_ID; // Replace with your actual index ID
+    console.log('apiresponse12', apiKey, indexId)
     const apiResponse = await semanticSearchVideos(queryText, indexId, apiKey);
+    console.log('apiresponse13', JSON.stringify(apiResponse))
     res.json(apiResponse.data);
   } catch (error) {
     const status = error.response?.status || 500;
@@ -293,6 +313,7 @@ const ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const path = require('path');
+const json = require("body-parser/lib/types/json");
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
